@@ -1,3 +1,9 @@
-lireddit-server/dist
-lireddit-server/node_modules
-lireddit-server/yarn-error.log
+#server
+server/dist
+server/node_modules
+server/yarn-error.log
+
+# web
+web/.next
+web/node_modules
+web/yarn.lock

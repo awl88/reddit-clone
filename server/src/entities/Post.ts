@@ -9,14 +9,14 @@ export class Post {
   id!: number;
 
   @Field(() => Date)
-  @Property({type: 'date'})
+  @Property({ type: "date" })
   createdAt: Date = new Date();
 
   @Field(() => Date)
-  @Property({type: 'date', onUpdate: () => new Date()})
+  @Property({ type: "date", onUpdate: () => new Date() })
   updatedAt: Date = new Date();
 
   @Field()
-  @Property({type: 'text'})
+  @Property({ type: "text" })
   title!: string;
 }

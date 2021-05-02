@@ -291,7 +291,7 @@
     "@types/keygrip" "*"
     "@types/node" "*"
 
-"@types/cors@2.8.10":
+"@types/cors@2.8.10", "@types/cors@^2.8.10":
   version "2.8.10"
   resolved "https://artifacts.flowable.com:443/artifactory/api/npm/npm-all/@types/cors/-/cors-2.8.10.tgz#61cc8469849e5bcdd0c7044122265c39cec10cf4"
   integrity sha1-YcyEaYSeW83QxwRBIiZcOc7BDPQ=
