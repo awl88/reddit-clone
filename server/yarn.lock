@@ -444,6 +444,13 @@
   resolved "https://artifacts.flowable.com:443/artifactory/api/npm/npm-all/@types/node/-/node-14.14.43.tgz#26bcbb0595b305400e8ceaf9a127a7f905ae49c8"
   integrity sha1-Jry7BZWzBUAOjOr5oSen+QWuScg=
 
+"@types/nodemailer@^6.4.1":
+  version "6.4.1"
+  resolved "https://artifacts.flowable.com:443/artifactory/api/npm/npm-all/@types/nodemailer/-/nodemailer-6.4.1.tgz#31f96f4410632f781d3613bd1f4293649e423f75"
+  integrity sha1-MflvRBBjL3gdNhO9H0KTZJ5CP3U=
+  dependencies:
+    "@types/node" "*"
+
 "@types/qs@*":
   version "6.9.6"
   resolved "https://artifacts.flowable.com:443/artifactory/api/npm/npm-all/@types/qs/-/qs-6.9.6.tgz#df9c3c8b31a247ec315e6996566be3171df4b3b1"
@@ -2745,6 +2752,11 @@ node-fetch@^2.1.2, node-fetch@^2.2.0, node-fetch@^2.6.1:
   version "2.6.1"
   resolved "https://artifacts.flowable.com:443/artifactory/api/npm/npm-all/node-fetch/-/node-fetch-2.6.1.tgz#045bd323631f76ed2e2b55573394416b639a0052"
   integrity sha1-BFvTI2Mfdu0uK1VXM5RBa2OaAFI=
+
+nodemailer@^6.6.0:
+  version "6.6.0"
+  resolved "https://artifacts.flowable.com:443/artifactory/api/npm/npm-all/nodemailer/-/nodemailer-6.6.0.tgz#ed47bb572b48d9d0dca3913fdc156203f438f427"
+  integrity sha1-7Ue7VytI2dDco5E/3BViA/Q49Cc=
 
 nodemon@^2.0.7:
   version "2.0.7"
