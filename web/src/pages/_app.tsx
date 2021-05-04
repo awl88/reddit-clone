@@ -1,6 +1,4 @@
-import { ChakraProvider, ColorModeProvider, CSSReset } from "@chakra-ui/react";
-import { ThemeProvider } from "@emotion/react";
-import { Provider } from "urql";
+import { ChakraProvider, ColorModeProvider } from "@chakra-ui/react";
 import theme from "../theme";
 
 function MyApp({ Component, pageProps }: any) {
