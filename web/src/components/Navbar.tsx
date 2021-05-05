@@ -1,4 +1,4 @@
-import { Box, Flex } from "@chakra-ui/layout";
+import { Box, Flex, Heading } from "@chakra-ui/layout";
 import { Button, Link } from "@chakra-ui/react";
 import React from "react";
 import NextLink from "next/link";
@@ -49,6 +49,7 @@ export const Navbar: React.FC<navbarProps> = ({}) => {
 
   return (
     <Flex zIndex={1} position="sticky" top={0} bg="tomato" p={4}>
+      <Heading fontSize="xl">fakeddit.</Heading>
       <Box ml={"auto"}>{body}</Box>
     </Flex>
   );
