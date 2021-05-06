@@ -12,6 +12,7 @@ export const UpdootSection: React.FC<UpdootSectionProps> = ({ post }) => {
   return (
     <Flex direction="column" justifyContent="center" alignItems="center" mr={4}>
       <IconButton
+        colorScheme={post.voteStatus === 1 ? "green" : undefined}
         onClick={() => {
           vote({
             postId: post.id,
@@ -23,6 +24,7 @@ export const UpdootSection: React.FC<UpdootSectionProps> = ({ post }) => {
       />
       <Box>{post.points}</Box>
       <IconButton
+        colorScheme={post.voteStatus === -1 ? "red" : undefined}
         onClick={() => {
           vote({
             postId: post.id,
