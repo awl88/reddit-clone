@@ -17,6 +17,7 @@ import { MyContext } from "src/types";
 import { isAuth } from "../middleware/isAuth";
 import { getConnection } from "typeorm";
 import { Updoot } from "../entities/Updoot";
+import { tmpdir } from "node:os";
 
 @InputType()
 class PostInput {
@@ -50,25 +51,77 @@ export class PostResolver {
     @Arg("postId", () => Int) postId: number,
     @Ctx() { req }: MyContext
   ) {
-    const updoot = value !== -1 ? 1 : -1;
+    const updootValue = value !== -1 ? 1 : -1;
     const { userId } = req.session;
 
-    // await Updoot.insert({
-    //   userId,
-    //   postId,
-    //   value: updoot,
-    // });
+    const updoot = await Updoot.findOne({ where: { postId, userId } });
+
+    if (updoot && updoot.value !== updootValue) {
+      // changing updoot value
+      await getConnection().transaction(async (tm) => {
+        await tm.query(
+          `
+          update updoot
+          set value = $1
+          where "postId" = $2 and "userId" = $3
+          `,
+          [updootValue, postId, userId]
+        );
+
+        await tm.query(
+          `
+          update post
+          set points = points + $1
+          where id = $2;
+          `,
+          [updootValue * 2, postId]
+        );
+      });
+    } else if (updoot && updoot.value === updootValue) {
+      // taking away updoot
+      await getConnection().transaction(async (tm) => {
+        await tm.query(
+          `
+          delete from updoot 
+          where "postId" = $1 and "userId" = $2
+          `,
+          [postId, userId]
+        );
+
+        await tm.query(
+          `
+          update post
+          set points = points + $1
+          where id = $2;
+          `,
+          [updootValue * -1, postId]
+        );
+      });
+    } else if (!updoot) {
+      // has never voted before
+      await getConnection().transaction(async (tm) => {
+        await tm.query(
+          `
+          insert into updoot("userId", "postId", value)
+          values($1, $2, $3);
+          `,
+          [userId, postId, updootValue]
+        );
+
+        await tm.query(
+          `
+          update post
+          set points = points + $1
+          where id = $2;
+          `,
+          [updootValue, postId]
+        );
+      });
+    }
 
     await getConnection().query(
       `
       START TRANSACTION;
-
-      insert into updoot("userId", "postId", value)
-      values(${userId}, ${postId}, ${updoot});
-
-      update post
-      set points = points + ${updoot}
-      where id = ${postId};
 
       COMMIT;
       `
