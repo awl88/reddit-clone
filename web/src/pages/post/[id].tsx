@@ -1,5 +1,5 @@
 import { Box, Flex, Heading } from "@chakra-ui/layout";
-import { Link } from "@chakra-ui/react";
+import { Button, Divider, Text } from "@chakra-ui/react";
 import { withUrqlClient } from "next-urql";
 import { useRouter } from "next/router";
 import React from "react";
@@ -10,19 +10,11 @@ import {
   usePostQuery,
 } from "../../generated/graphql";
 import { createUrqlClient } from "../../utils/createUrqlClient";
+import NextLink from "next/link";
+import { useGetPostFromUrl } from "../../utils/useGetPostFromUrl";
 
 export const Post: React.FC<{}> = ({}) => {
-  const router = useRouter();
-  const intId =
-    typeof router.query.id === "string" ? parseInt(router.query.id) : -1;
-
-  const [, deletePost] = useDeletePostMutation();
-  const [{ data: postData, fetching }] = usePostQuery({
-    pause: intId === -1,
-    variables: {
-      id: intId,
-    },
-  });
+  const [{ data: postData, fetching }] = useGetPostFromUrl();
   const [{ data: meData }] = useMeQuery();
 
   if (fetching)
@@ -35,28 +27,55 @@ export const Post: React.FC<{}> = ({}) => {
   if (!postData?.post)
     return (
       <Layout>
-        <Box>Could not find that post :/</Box>
+        <Box>Could not find that post :(</Box>
       </Layout>
     );
 
+  const date = new Date(parseInt(postData.post.createdAt));
+
   return (
     <Layout>
-      <Flex>
-        <Heading flex={1} mb={4}>
+      <Flex mb={4} alignItems="flex-end">
+        <Heading bottom={0} flex={1}>
           {postData.post.title}
+          <Box ml={2} fontWeight="light">
+            <Text fontSize="sm">by {postData.post.creator.username}</Text>
+            <Text fontSize="xs">{date.toDateString()}</Text>
+          </Box>
         </Heading>
         {postData.post.creator.id === meData?.me?.id ? (
-          <Link
-            onClick={async () => {
-              await deletePost({ id: postData.post!.id });
-              router.push("/");
-            }}
+          <Flex
+            direction="column"
+            justifyContent="center"
+            alignItems="right"
+            mr={4}
           >
-            delete post
-          </Link>
+            <NextLink href="/">
+              <Button
+                size="xs"
+                mb={2}
+                colorScheme="blackAlpha"
+                onClick={async () => {
+                  await deletePost({ id: postData.post!.id });
+                }}
+              >
+                delete post
+              </Button>
+            </NextLink>
+            <NextLink
+              href="/post/edit/[id]"
+              as={`/post/edit/${postData.post!.id}`}
+            >
+              <Button size="xs" colorScheme="blackAlpha">
+                update post
+              </Button>
+            </NextLink>
+          </Flex>
         ) : null}
       </Flex>
-      {postData.post.text}
+      <Divider orientation="horizontal" />
+
+      <Text m={4}>{postData.post.text}</Text>
     </Layout>
   );
 };

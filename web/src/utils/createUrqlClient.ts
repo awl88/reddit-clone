@@ -64,7 +64,7 @@ const cursorPagination = (): Resolver => {
 
 export const createUrqlClient = (ssrExchange: any, ctx: any) => {
   let cookie = "";
-  if (isServer()) cookie = ctx.req.headers.cookie;
+  if (isServer()) cookie = ctx?.req?.headers?.cookie;
 
   return {
     url: "http://localhost:4000/graphql",
@@ -102,8 +102,6 @@ export const createUrqlClient = (ssrExchange: any, ctx: any) => {
                 `,
                 { id: postId } as Post
               );
-
-              console.log("data: ", data);
 
               if (data) {
                 const newPoints = data.points + value;
