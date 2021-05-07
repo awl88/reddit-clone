@@ -28,23 +28,24 @@ const Index = () => {
 
   return (
     <Layout>
-      <br />
       {!data && fetching ? (
         <div>loading...</div>
       ) : (
         <Stack spacing={8}>
-          {data!.posts.posts.map((p) => (
-            <Flex key={p.id} p={5} shadow="md" borderWidth="1px">
-              <UpdootSection post={p} />
-              <NextLink href="/post/[id]" as={`/post/${p.id}`}>
-                <Box cursor="pointer" flexGrow={1}>
-                  <Heading fontSize="xl">{p.title}</Heading>
-                  <Text fontSize="sm">posted by {p.creator.username}</Text>
-                  <Text mt={4}>{p.textSnippet}</Text>
-                </Box>
-              </NextLink>
-            </Flex>
-          ))}
+          {data!.posts.posts.map((p) =>
+            !p ? null : (
+              <Flex key={p.id} p={5} shadow="md" borderWidth="1px">
+                <UpdootSection post={p} />
+                <NextLink href="/post/[id]" as={`/post/${p.id}`}>
+                  <Box cursor="pointer" flexGrow={1}>
+                    <Heading fontSize="xl">{p.title}</Heading>
+                    <Text fontSize="sm">posted by {p.creator.username}</Text>
+                    <Text mt={4}>{p.textSnippet}</Text>
+                  </Box>
+                </NextLink>
+              </Flex>
+            )
+          )}
         </Stack>
       )}
       {data && data.posts.hasMore ? (

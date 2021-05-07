@@ -1,21 +1,29 @@
-import { Box, Heading } from "@chakra-ui/layout";
+import { Box, Flex, Heading } from "@chakra-ui/layout";
+import { Link } from "@chakra-ui/react";
 import { withUrqlClient } from "next-urql";
 import { useRouter } from "next/router";
 import React from "react";
 import { Layout } from "../../components/Layout";
-import { usePostQuery } from "../../generated/graphql";
+import {
+  useDeletePostMutation,
+  useMeQuery,
+  usePostQuery,
+} from "../../generated/graphql";
 import { createUrqlClient } from "../../utils/createUrqlClient";
 
 export const Post: React.FC<{}> = ({}) => {
   const router = useRouter();
   const intId =
     typeof router.query.id === "string" ? parseInt(router.query.id) : -1;
-  const [{ data, fetching }] = usePostQuery({
+
+  const [, deletePost] = useDeletePostMutation();
+  const [{ data: postData, fetching }] = usePostQuery({
     pause: intId === -1,
     variables: {
       id: intId,
     },
   });
+  const [{ data: meData }] = useMeQuery();
 
   if (fetching)
     return (
@@ -24,7 +32,7 @@ export const Post: React.FC<{}> = ({}) => {
       </Layout>
     );
 
-  if (!data?.post)
+  if (!postData?.post)
     return (
       <Layout>
         <Box>Could not find that post :/</Box>
@@ -33,8 +41,22 @@ export const Post: React.FC<{}> = ({}) => {
 
   return (
     <Layout>
-      <Heading mb={4}>{data.post.title}</Heading>
-      {data.post.text}
+      <Flex>
+        <Heading flex={1} mb={4}>
+          {postData.post.title}
+        </Heading>
+        {postData.post.creator.id === meData?.me?.id ? (
+          <Link
+            onClick={async () => {
+              await deletePost({ id: postData.post!.id });
+              router.push("/");
+            }}
+          >
+            delete post
+          </Link>
+        ) : null}
+      </Flex>
+      {postData.post.text}
     </Layout>
   );
 };
