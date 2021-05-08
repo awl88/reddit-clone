@@ -1,5 +1,5 @@
-import { ChevronUpIcon, ChevronDownIcon } from "@chakra-ui/icons";
-import { Flex, IconButton, Box } from "@chakra-ui/react";
+import { ChevronDownIcon, ChevronUpIcon } from "@chakra-ui/icons";
+import { Box, Flex, IconButton } from "@chakra-ui/react";
 import React from "react";
 import { PostSnippetFragment, useVoteMutation } from "../generated/graphql";
 

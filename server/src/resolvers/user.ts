@@ -1,3 +1,4 @@
+import argon2 from "argon2";
 import { MyContext } from "src/types";
 import {
   Arg,
@@ -10,14 +11,13 @@ import {
   Resolver,
   Root,
 } from "type-graphql";
-import { User } from "../entities/User";
-import argon2 from "argon2";
+import { getConnection } from "typeorm";
+import { v4 } from "uuid";
 import { COOKIE_NAME, FORGET_PASSWORD_PREFIX } from "../constants";
+import { User } from "../entities/User";
+import { sendEmail } from "../util/sendEmail";
 import { UsernamePasswordInput } from "../util/UsernamePasswordInput";
 import { validateRegister } from "../util/validateRegister";
-import { sendEmail } from "../util/sendEmail";
-import { v4 } from "uuid";
-import { getConnection } from "typeorm";
 
 @ObjectType()
 class UserResponse {

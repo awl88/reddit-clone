@@ -1,19 +1,15 @@
 import { Box, Flex, Heading } from "@chakra-ui/layout";
 import { Button, Divider, Text } from "@chakra-ui/react";
 import { withUrqlClient } from "next-urql";
-import { useRouter } from "next/router";
+import NextLink from "next/link";
 import React from "react";
 import { Layout } from "../../components/Layout";
-import {
-  useDeletePostMutation,
-  useMeQuery,
-  usePostQuery,
-} from "../../generated/graphql";
+import { useDeletePostMutation, useMeQuery } from "../../generated/graphql";
 import { createUrqlClient } from "../../utils/createUrqlClient";
-import NextLink from "next/link";
 import { useGetPostFromUrl } from "../../utils/useGetPostFromUrl";
 
 export const Post: React.FC<{}> = ({}) => {
+  const [, deletePost] = useDeletePostMutation();
   const [{ data: postData, fetching }] = useGetPostFromUrl();
   const [{ data: meData }] = useMeQuery();
 

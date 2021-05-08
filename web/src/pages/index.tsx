@@ -1,14 +1,4 @@
-import {
-  Box,
-  Button,
-  Center,
-  Divider,
-  Flex,
-  Heading,
-  Link,
-  Stack,
-  Text,
-} from "@chakra-ui/react";
+import { Box, Button, Flex, Heading, Stack, Text } from "@chakra-ui/react";
 import { withUrqlClient } from "next-urql";
 import NextLink from "next/link";
 import React, { useState } from "react";
