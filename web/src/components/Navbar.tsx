@@ -3,16 +3,21 @@ import { Button, Link } from "@chakra-ui/react";
 import NextLink from "next/link";
 import React from "react";
 import { useLogoutMutation, useMeQuery } from "../generated/graphql";
+import { useApolloClient } from "@apollo/client";
+import { isServer } from "../utils/isServer";
 
 interface navbarProps {}
 
 export const Navbar: React.FC<navbarProps> = ({}) => {
-  const [{ fetching: logoutFetching }, logout] = useLogoutMutation();
-  const [{ data, fetching }] = useMeQuery();
+  const [logout] = useLogoutMutation();
+  const { data, loading } = useMeQuery({
+    skip: isServer(),
+  });
+  const apolloClient = useApolloClient();
 
   let body = null;
 
-  if (fetching) {
+  if (loading) {
   } else if (!data?.me) {
     body = (
       <>
@@ -34,10 +39,11 @@ export const Navbar: React.FC<navbarProps> = ({}) => {
           <Link mr={4}>Create Post</Link>
         </NextLink>
         <Button
-          onClick={() => {
-            logout();
+          onClick={async () => {
+            await logout();
+            await apolloClient.resetStore();
           }}
-          isLoading={logoutFetching}
+          isLoading={loading}
           variant="link"
         >
           Logout

@@ -7,13 +7,14 @@ import { Layout } from "../../components/Layout";
 import { useDeletePostMutation, useMeQuery } from "../../generated/graphql";
 import { createUrqlClient } from "../../utils/createUrqlClient";
 import { useGetPostFromUrl } from "../../utils/useGetPostFromUrl";
+import { withApollo } from "../../utils/withApollo";
 
 export const Post: React.FC<{}> = ({}) => {
-  const [, deletePost] = useDeletePostMutation();
-  const [{ data: postData, fetching }] = useGetPostFromUrl();
-  const [{ data: meData }] = useMeQuery();
+  const [deletePost] = useDeletePostMutation();
+  const { data: postData, loading } = useGetPostFromUrl();
+  const { data: meData } = useMeQuery();
 
-  if (fetching)
+  if (loading)
     return (
       <Layout>
         <Box>loading...</Box>
@@ -52,7 +53,13 @@ export const Post: React.FC<{}> = ({}) => {
                 mb={2}
                 colorScheme="blackAlpha"
                 onClick={async () => {
-                  await deletePost({ id: postData.post!.id });
+                  await deletePost({
+                    variables: { id: postData.post!.id },
+                    update: (cache) => {
+                      console.log("id: ", postData);
+                      cache.evict({ id: "Post:" + postData.post!.id });
+                    },
+                  });
                 }}
               >
                 delete post
@@ -76,4 +83,4 @@ export const Post: React.FC<{}> = ({}) => {
   );
 };
 
-export default withUrqlClient(createUrqlClient, { ssr: true })(Post);
+export default withApollo({ ssr: true })(Post);

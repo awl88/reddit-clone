@@ -1,6 +1,5 @@
 import { ApolloServer } from "apollo-server-express";
 import connectRedis from "connect-redis";
-import "dotenv-safe";
 import cors from "cors";
 import express from "express";
 import session from "express-session";
@@ -22,7 +21,7 @@ import { createUserLoader } from "./util/createUserLoader";
 const main = async () => {
   const conn = await createConnection({
     type: "postgres",
-    url: process.env.DATABASE_URL,
+    url: "postgresql://andrewlyon@localhost:5432/fakeddit",
     logging: true,
     // synchronize: true,
     migrations: [path.join(__dirname, "./migrations/*")],
