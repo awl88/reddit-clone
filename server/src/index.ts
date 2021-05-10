@@ -1,5 +1,6 @@
 import { ApolloServer } from "apollo-server-express";
 import connectRedis from "connect-redis";
+import "dotenv-safe";
 import cors from "cors";
 import express from "express";
 import session from "express-session";
@@ -19,13 +20,11 @@ import { createUpdootLoader } from "./util/createUpdootLoader";
 import { createUserLoader } from "./util/createUserLoader";
 
 const main = async () => {
-  const conn = createConnection({
+  const conn = await createConnection({
     type: "postgres",
-    database: "lireddit2",
-    username: "andrewlyon",
-    password: "",
+    url: process.env.DATABASE_URL,
     logging: true,
-    synchronize: true,
+    // synchronize: true,
     migrations: [path.join(__dirname, "./migrations/*")],
     entities: [Post, User, Updoot],
   });
@@ -38,11 +37,12 @@ const main = async () => {
   const app = express();
 
   const RedisStore = connectRedis(session);
-  const redis = new Redis();
+  const redis = new Redis(process.env.REDIS_URL);
+  app.set("trust proxy", 1);
 
   app.use(
     cors({
-      origin: "http://localhost:3000",
+      origin: process.env.CORS_ORIGIN || "http://localhost:3000",
       credentials: true,
     })
   );
@@ -59,9 +59,10 @@ const main = async () => {
         httpOnly: true,
         sameSite: "lax", //csrf
         secure: __prod__, // cookie only works in https
+        domain: __prod__ ? ".fakeddit.com" : undefined,
       },
       saveUninitialized: false,
-      secret: "qwejjdflkjalkdj",
+      secret: process.env.SESSION_SECRET || "sfgkwedkwlms",
       resave: false,
     })
   );
@@ -85,8 +86,10 @@ const main = async () => {
     cors: false,
   });
 
-  app.listen(4000, () => {
-    console.log("-+-server started on localhost:4000-+-");
+  app.listen(process.env.PORT || 4000, () => {
+    console.log(
+      `-+-server started on localhost:${process.env.PORT || 4000}-+-`
+    );
   });
 };
 
