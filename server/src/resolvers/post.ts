@@ -76,6 +76,12 @@ export class PostResolver {
 
     const updoot = await Updoot.findOne({ where: { postId, userId } });
 
+    console.log("updoot: ", updoot);
+    console.log("updoot.value: ", updoot?.value);
+    console.log("updootValue: ", updootValue);
+    console.log("post: ", postId);
+    console.log("user: ", userId);
+
     if (updoot && updoot.value !== updootValue) {
       // changing updoot value
       await getConnection().transaction(async (tm) => {
